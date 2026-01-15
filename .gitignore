@@ -1,0 +1,16 @@
+.env
+events.db 
+node_modules
+service-account.json
+sessions.sqlite
+uploads
+commands-manifest.json
+.prittierrc
+.prettierignore
+.vscode
+backup_db
+backup_codebase
+lavalink
+lavalink/application.yml
+events.db-shm
+events.db-wal
