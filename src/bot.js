@@ -15,7 +15,9 @@ const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMessages,
-        GatewayIntentBits.MessageContent
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.GuildModeration
     ]
 });
 
@@ -54,6 +56,32 @@ async function loadModules() {
             client.on(event.default.name, (...args) => event.default.execute(...args));
         }
         console.log(`Loaded event: ${event.default.name}`);
+    }
+
+    // Load handlers
+    const handlersPath = path.join(__dirname, 'handlers');
+    if (fs.existsSync(handlersPath)) {
+        const handlerFiles = fs.readdirSync(handlersPath).filter(file => file.endsWith('.js'));
+
+        for (const file of handlerFiles) {
+            const filePath = path.join(handlersPath, file);
+            try {
+                const handler = await import(`./handlers/${file}`);
+                
+                // Check for common handler initialization functions
+                if (typeof handler.initializeModLogs === 'function') {
+                    handler.initializeModLogs(client);
+                    console.log(`Loaded handler: ${file}`);
+                } else if (typeof handler.default === 'function') {
+                    handler.default(client);
+                    console.log(`Loaded handler: ${file}`);
+                } else {
+                    console.warn(`[WARNING] The handler at ${filePath} does not export a recognized initialization function.`);
+                }
+            } catch (error) {
+                console.error(`Error loading handler ${file}:`, error);
+            }
+        }
     }
 }
 
