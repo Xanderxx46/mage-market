@@ -72,6 +72,9 @@ async function loadModules() {
                 if (typeof handler.initializeModLogs === 'function') {
                     handler.initializeModLogs(client);
                     console.log(`Loaded handler: ${file}`);
+                } else if (typeof handler.initializeCategoryTracker === 'function') {
+                    handler.initializeCategoryTracker(client);
+                    console.log(`Loaded handler: ${file}`);
                 } else if (typeof handler.default === 'function') {
                     handler.default(client);
                     console.log(`Loaded handler: ${file}`);

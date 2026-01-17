@@ -72,22 +72,6 @@ export function setupFullLogger(client) {
     const logChannel = await getLogChannel(member.guild);
     if (!logChannel) return;
 
-    const WELCOME_CHANNEL_ID = '1332773894771183656'; // <-- set this!
-    const welcomeChannel = await member.guild.channels
-      .fetch(WELCOME_CHANNEL_ID)
-      .catch(() => null);
-
-    const welcomeMessage = `Welcome to **${member.guild.name}**, <@${member.id}>! To apply to the unit go to https://1a75.org/apply and apply, if you have any questions please feel free to DM me for help! I will connect you to a private channel with the admins!`;
-
-    // DM the user
-    let dmFailed = false;
-    try {
-      await member.send(welcomeMessage);
-    } catch (e) {
-      dmFailed = true;
-      console.error(`Could not DM ${member.user.tag} (${member.id}):`, e);
-    }
-
     // Log embed
     const embed = new EmbedBuilder()
       .setColor(0x2ecc71)
@@ -124,13 +108,6 @@ export function setupFullLogger(client) {
 
     // Send the log embed to the log channel
     await logChannel.send({ embeds: [embed] });
-
-    // Ping the user in the welcome channel with the same message
-    if (welcomeChannel && welcomeChannel.isTextBased()) {
-      await welcomeChannel.send({
-        content: `${welcomeMessage}`,
-      });
-    }
 
     // Auto-role (optional)
     const roleId = '1363618576895840398';
